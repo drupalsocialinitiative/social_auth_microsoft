@@ -107,15 +107,6 @@ class MicrosoftAuthSettingsForm extends SocialAuthSettingsForm {
       '#default_value' => $GLOBALS['base_url'] . '/user/login/microsoft/callback',
     ];
 
-    $form['microsoft_settings']['authorized_javascript_origin'] = [
-      '#type' => 'textfield',
-      '#disabled' => TRUE,
-      '#title' => $this->t('Authorized Javascript Origin'),
-      '#description' => $this->t('Copy this value to <em>Authorized Javascript Origins</em> field of your Microsoft App settings.'),
-      '#default_value' => $this->requestContext->getHost(),
-    ];
-
-
     return parent::buildForm($form, $form_state);
   }
 

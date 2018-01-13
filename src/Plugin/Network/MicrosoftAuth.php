@@ -66,7 +66,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('social_auth.social_auth_data_handler'),
+      $container->get('social_auth.data_handler'),
       $configuration,
       $plugin_id,
       $plugin_definition,
@@ -122,7 +122,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
   /**
    * Sets the underlying SDK library.
    *
-   * @return \League\OAuth2\Client\Provider\Microsoft
+   * @return \Stevenmaguire\OAuth2\Client\Provider\Microsoft
    *   The initialized 3rd party library instance.
    *
    * @throws SocialApiException
@@ -156,7 +156,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
         ];
       }
 
-      return new \Stevenmaguire\OAuth2\Client\Provider\Microsoft($league_settings);
+      return new Microsoft($league_settings);
     }
     return FALSE;
   }

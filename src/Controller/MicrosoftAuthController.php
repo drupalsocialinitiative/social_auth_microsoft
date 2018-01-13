@@ -10,7 +10,6 @@ use Drupal\social_auth_microsoft\MicrosoftAuthManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Routing\TrustedRedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 
 /**
  * Returns responses for Simple Microsoft Connect module routes.
@@ -52,14 +51,6 @@ class MicrosoftAuthController extends ControllerBase {
    */
   private $dataHandler;
 
-
-  /**
-   * The logger channel.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  protected $loggerFactory;
-
   /**
    * MicrosoftAuthController constructor.
    *
@@ -71,26 +62,26 @@ class MicrosoftAuthController extends ControllerBase {
    *   Used to manage authentication methods.
    * @param \Symfony\Component\HttpFoundation\RequestStack $request
    *   Used to access GET parameters.
-   * @param \Drupal\social_auth\SocialAuthDataHandler $social_auth_data_handler
+   * @param \Drupal\social_auth\SocialAuthDataHandler $data_handler
    *   SocialAuthDataHandler object.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
-   *   Used for logging errors.
    */
-  public function __construct(NetworkManager $network_manager, SocialAuthUserManager $user_manager, MicrosoftAuthManager $microsoft_manager, RequestStack $request, SocialAuthDataHandler $social_auth_data_handler, LoggerChannelFactoryInterface $logger_factory) {
+  public function __construct(NetworkManager $network_manager,
+                              SocialAuthUserManager $user_manager,
+                              MicrosoftAuthManager $microsoft_manager,
+                              RequestStack $request,
+                              SocialAuthDataHandler $data_handler) {
 
     $this->networkManager = $network_manager;
     $this->userManager = $user_manager;
     $this->microsoftManager = $microsoft_manager;
     $this->request = $request;
-    $this->dataHandler = $social_auth_data_handler;
-    $this->loggerFactory = $logger_factory;
+    $this->dataHandler = $data_handler;
 
     // Sets the plugin id.
     $this->userManager->setPluginId('social_auth_microsoft');
 
     // Sets the session keys to nullify if user could not logged in.
     $this->userManager->setSessionKeysToNullify(['access_token', 'oauth2state']);
-    $this->setting = $this->config('social_auth_microsoft.settings');
   }
 
   /**
@@ -102,8 +93,7 @@ class MicrosoftAuthController extends ControllerBase {
       $container->get('social_auth.user_manager'),
       $container->get('social_auth_microsoft.manager'),
       $container->get('request_stack'),
-      $container->get('social_auth.social_auth_data_handler'),
-      $container->get('logger.factory')
+      $container->get('social_auth.data_handler')
     );
   }
 
@@ -113,7 +103,7 @@ class MicrosoftAuthController extends ControllerBase {
    * Redirects the user to Microsoft for authentication.
    */
   public function redirectToMicrosoft() {
-    /* @var \League\OAuth2\Client\Provider\Microsoft false $microsoft */
+    /* @var \Stevenmaguire\OAuth2\Client\Provider\Microsoft|false $microsoft */
     $microsoft = $this->networkManager->createInstance('social_auth_microsoft')->getSdk();
 
     // If microsoft client could not be obtained.
@@ -150,7 +140,7 @@ class MicrosoftAuthController extends ControllerBase {
       return $this->redirect('user.login');
     }
 
-    /* @var \League\OAuth2\Client\Provider\Microsoft false $microsoft */
+    /* @var \Stevenmaguire\OAuth2\Client\Provider\Microsoft|false $microsoft */
     $microsoft = $this->networkManager->createInstance('social_auth_microsoft')->getSdk();
 
     // If Microsoft client could not be obtained.
@@ -165,7 +155,7 @@ class MicrosoftAuthController extends ControllerBase {
     $retrievedState = $this->request->getCurrentRequest()->query->get('state');
     if (empty($retrievedState) || ($retrievedState !== $state)) {
       $this->userManager->nullifySessionKeys();
-      drupal_set_message($this->t('Microsoft login failed. Unvalid oAuth2 State.'), 'error');
+      drupal_set_message($this->t('Microsoft login failed. Unvalid OAuth2 State.'), 'error');
       return $this->redirect('user.login');
     }
 
@@ -175,12 +165,13 @@ class MicrosoftAuthController extends ControllerBase {
     $this->microsoftManager->setClient($microsoft)->authenticate();
 
     // Gets user's info from Microsoft API.
+    /* @var \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner $microsoft_profile */
     if (!$microsoft_profile = $this->microsoftManager->getUserInfo()) {
       drupal_set_message($this->t('Microsoft login failed, could not load Microsoft profile. Contact site administrator.'), 'error');
       return $this->redirect('user.login');
     }
 
-    return $this->userManager->authenticateUser($microsoft_profile->getName(), $microsoft_profile->getEmail(), $microsoft_profile->getId(), $this->microsoftManager->getAccessToken(), '', json_encode($data));
+    return $this->userManager->authenticateUser($microsoft_profile->getName(), $microsoft_profile->getEmail(), $microsoft_profile->getId(), $this->microsoftManager->getAccessToken());
   }
 
 }

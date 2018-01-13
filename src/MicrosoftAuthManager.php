@@ -45,7 +45,7 @@ class MicrosoftAuthManager extends OAuth2Manager {
   /**
    * The Microsoft client object.
    *
-   * @var \League\OAuth2\Client\Provider\Microsoft
+   * @var \Stevenmaguire\OAuth2\Client\Provider\Microsoft
    */
   protected $client;
   /**
@@ -58,7 +58,7 @@ class MicrosoftAuthManager extends OAuth2Manager {
   /**
    * The Microsoft user.
    *
-   * @var \League\OAuth2\Client\Provider\MicrosoftUser
+   * @var \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner
    */
   protected $user;
 
@@ -75,7 +75,6 @@ class MicrosoftAuthManager extends OAuth2Manager {
    * @var array
    */
   protected $settings;
-
 
   /**
    * Constructor.
@@ -101,9 +100,6 @@ class MicrosoftAuthManager extends OAuth2Manager {
 
   /**
    * Authenticates the users by using the access token.
-   *
-   * @return $this
-   *   The current object.
    */
   public function authenticate() {
     $this->token = $this->client->getAccessToken('authorization_code',
@@ -113,14 +109,13 @@ class MicrosoftAuthManager extends OAuth2Manager {
   /**
    * Gets the data by using the access token returned.
    *
-   * @return League\OAuth2\Client\Provider\MicrosoftUser
+   * @return \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner
    *   User info returned by the Microsoft.
    */
   public function getUserInfo() {
     $this->user = $this->client->getResourceOwner($this->token);
     return $this->user;
   }
-
 
   /**
    * Returns the Microsoft login URL where user will be redirected.
@@ -129,7 +124,7 @@ class MicrosoftAuthManager extends OAuth2Manager {
    *   Absolute Microsoft login URL where user will be redirected
    */
   public function getMicrosoftLoginUrl() {
-    $scopes = ['wl.basic', 'wl.signin'];
+    $scopes = ['wl.basic', 'wl.signin', 'wl.emails'];
 
     $options = [
       'scope' => $scopes,
@@ -162,6 +157,5 @@ class MicrosoftAuthManager extends OAuth2Manager {
     // Generate and return the URL where we should redirect the user.
     return $state;
   }
-
 
 }

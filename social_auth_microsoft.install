@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Install, update, and uninstall functions for the Social Auth Microsoft module.
+ * Install, update, and uninstall functions for Social Auth Microsoft.
  */
 
 use Drupal\social_api\Utility\SocialApiImplementerInstaller;

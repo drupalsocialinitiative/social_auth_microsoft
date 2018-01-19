@@ -1,20 +1,26 @@
-SOCIAL AUTH GOOGLE MODULE
-
 CONTENTS OF THIS FILE
 ---------------------
 
  * Introduction
  * Requirements
- * Recommended modules
  * Installation
  * Configuration
  * How it works
  * Support requests
+ * Maintainers
+
 
 INTRODUCTION
 ------------
 
-Social Auth Microsoft Module is a Microsoft Authentication integration for Drupal.
+Social Auth Microsoft Module is a Microsoft Authentication integration for
+Drupal. It is based on the Social Auth and Social API projects.
+
+It adds to the site:
+ * A new url: /user/login/microsoft.
+ * A settings form at /admin/config/social-api/social-auth/microsoft.
+ * A Microsoft logo in the Social Auth Login block.
+
 
 REQUIREMENTS
 ------------
@@ -25,25 +31,18 @@ This module requires the following modules:
  * Social API (https://drupal.org/project/social_api)
 
 
-RECOMMENDED MODULES
--------------------
-
- * Composer Manager (https://www.drupal.org/project/composer_manager):
-   This module will help to install the League PHP library and Microsoft base library for the league,
-   which are the libraries required to make user authentication.
-
 INSTALLATION
 ------------
 
- * Download Microsoft Base Library for TheLeague OAuth2 PHP library
-   (https://github.com/thephpleague/oauth2-microsoft). We recommend to use
-   Composer Manager module to install the library.
+ * Run composer to install dependencies:
+   composer require "drupal/social_auth_microsoft:^2.0"
 
  * Install the dependencies: Social API and Social Auth.
 
  * Install as you would normally install a contributed Drupal module. See:
    https://drupal.org/documentation/install/modules-themes/modules-8
    for further information.
+
 
 CONFIGURATION
 -------------
@@ -65,30 +64,27 @@ to /user/login/microsoft, so theming and customizing the button or link
 is very flexible.
 
 When the user opens the /user/login/microsoft link, it automatically takes
-user to Microsoft Accounts for authentication. Microsoft then returns the user to
-Drupal site. If we have an existing Drupal user with the same email address
+user to Microsoft Accounts for authentication. Microsoft then returns the user
+to Drupal site. If we have an existing Drupal user with the same email address
 provided by Microsoft, that user is logged in. Otherwise a new Drupal user is
 created.
 
+
 SUPPORT REQUESTS
 ----------------
-
 Before posting a support request, carefully read the installation
 instructions provided in module documentation page.
-
-Before posting a support request, check Composer Manager status report at
-admin/reports/composer-manager. This status page will show the Microsoft The League OAuth2 Base
-PHP library version if Drupal can detect it.
 
 Before posting a support request, check Recent log entries at
 admin/reports/dblog
 
 Once you have done this, you can post a support request at module issue queue:
-https://www.drupal.org/node/2841076
+https://www.drupal.org/project/issues/social_auth_microsoft
 
 When posting a support request, please inform what does the status report say
-at admin/reports/composer-manager and if you were able to see any errors in
+at admin/reports/dblog and if you were able to see any errors in
 Recent log entries.
+
 
 MAINTAINERS
 -----------

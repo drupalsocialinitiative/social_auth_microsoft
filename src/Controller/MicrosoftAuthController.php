@@ -116,9 +116,7 @@ class MicrosoftAuthController extends ControllerBase {
     $this->microsoftManager->setClient($microsoft);
 
     // Generates the URL where the user will be redirected for Microsoft login.
-    // If the user did not have email permission granted on previous attempt,
-    // we use the re-request URL requesting only the email address.
-    $microsoft_login_url = $this->microsoftManager->getMicrosoftLoginUrl();
+    $microsoft_login_url = $this->microsoftManager->getAuthorizationUrl();
 
     $state = $this->microsoftManager->getState();
 
@@ -166,12 +164,15 @@ class MicrosoftAuthController extends ControllerBase {
 
     // Gets user's info from Microsoft API.
     /* @var \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner $microsoft_profile */
-    if (!$microsoft_profile = $this->microsoftManager->getUserInfo()) {
+    if (!$profile = $this->microsoftManager->getUserInfo()) {
       drupal_set_message($this->t('Microsoft login failed, could not load Microsoft profile. Contact site administrator.'), 'error');
       return $this->redirect('user.login');
     }
 
-    return $this->userManager->authenticateUser($microsoft_profile->getName(), $microsoft_profile->getEmail(), $microsoft_profile->getId(), $this->microsoftManager->getAccessToken());
+    // Gets (or not) extra initial data.
+    $data = $this->userManager->checkIfUserExists($profile->getId()) ? NULL : $this->microsoftManager->getExtraDetails();
+
+    return $this->userManager->authenticateUser($profile->getName(), $profile->getEmail(), $profile->getId(), $this->microsoftManager->getAccessToken(), FALSE, $data);
   }
 
 }

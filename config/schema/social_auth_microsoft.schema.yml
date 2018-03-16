@@ -2,15 +2,9 @@ social_auth_microsoft.settings:
   type: config_object
   label: 'Social Auth Microsoft settings'
   mapping:
-    client_id:
+    app_id:
       type: string
-      label: 'Client ID'
-    client_secret:
+      label: 'Application ID'
+    app_secret:
       type: string
-      label: 'Client Secret'
-    scopes:
-      type: string
-      label: 'Scopes to be requested'
-    endpoints:
-      type: string
-      label: 'API Endpoints to be requested'
+      label: 'Application Secret'

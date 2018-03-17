@@ -136,24 +136,19 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
     }
     /* @var \Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings $settings */
     $settings = $this->settings;
-    // Proxy configuration data for outward proxy.
-    $proxyUrl = $this->siteSettings->get("http_client_config")["proxy"]["http"];
+
     if ($this->validateConfig($settings)) {
       // All these settings are mandatory.
+      $league_settings = [
+        'clientId' => $settings->getAppId(),
+        'clientSecret' => $settings->getAppSecret(),
+        'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/microsoft/callback',
+      ];
+
+      // Proxy configuration data for outward proxy.
+      $proxyUrl = $this->siteSettings->get('http_client_config')['proxy']['http'];
       if ($proxyUrl) {
-        $league_settings = [
-          'clientId' => $settings->getAppId(),
-          'clientSecret' => $settings->getAppSecret(),
-          'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/microsoft/callback',
-          'proxy' => $proxyUrl,
-        ];
-      }
-      else {
-        $league_settings = [
-          'clientId' => $settings->getAppId(),
-          'clientSecret' => $settings->getAppSecret(),
-          'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/microsoft/callback',
-        ];
+        $league_settings['proxy'] = $proxyUrl;
       }
 
       return new Microsoft($league_settings);

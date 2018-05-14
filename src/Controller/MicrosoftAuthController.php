@@ -115,7 +115,7 @@ class MicrosoftAuthController extends ControllerBase {
     // Microsoft service was returned, inject it to $microsoftManager.
     $this->microsoftManager->setClient($microsoft);
 
-    // Generates the URL where the user will be redirected for Microsoft login.
+    // Generates the URL where the user will be redirected for authentication.
     $microsoft_login_url = $this->microsoftManager->getAuthorizationUrl();
 
     $state = $this->microsoftManager->getState();
@@ -149,7 +149,7 @@ class MicrosoftAuthController extends ControllerBase {
 
     $state = $this->dataHandler->get('oauth2state');
 
-    // Retreives $_GET['state'].
+    // Retrieves $_GET['state'].
     $retrievedState = $this->request->getCurrentRequest()->query->get('state');
     if (empty($retrievedState) || ($retrievedState !== $state)) {
       $this->userManager->nullifySessionKeys();
@@ -157,13 +157,13 @@ class MicrosoftAuthController extends ControllerBase {
       return $this->redirect('user.login');
     }
 
+    $this->microsoftManager->setClient($microsoft)->authenticate();
+
     // Saves access token to session.
     $this->dataHandler->set('access_token', $this->microsoftManager->getAccessToken());
 
-    $this->microsoftManager->setClient($microsoft)->authenticate();
-
     // Gets user's info from Microsoft API.
-    /* @var \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner $microsoft_profile */
+    /* @var \Stevenmaguire\OAuth2\Client\Provider\MicrosoftResourceOwner $profile */
     if (!$profile = $this->microsoftManager->getUserInfo()) {
       drupal_set_message($this->t('Microsoft login failed, could not load Microsoft profile. Contact site administrator.'), 'error');
       return $this->redirect('user.login');

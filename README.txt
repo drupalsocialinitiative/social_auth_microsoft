@@ -13,8 +13,8 @@ CONTENTS OF THIS FILE
 INTRODUCTION
 ------------
 
-Social Auth Microsoft Module is a Microsoft Authentication integration for
-Drupal. It is based on the Social Auth and Social API projects.
+Social Auth Microsoft Module is a Microsoft integration for Drupal. It is based
+on the Social Auth and Social API projects.
 
 It adds to the site:
  * A new url: /user/login/microsoft.
@@ -36,8 +36,6 @@ INSTALLATION
 
  * Run composer to install dependencies:
    composer require "drupal/social_auth_microsoft:^2.0"
-
- * Install the dependencies: Social API and Social Auth.
 
  * Install as you would normally install a contributed Drupal module. See:
    https://drupal.org/documentation/install/modules-themes/modules-8

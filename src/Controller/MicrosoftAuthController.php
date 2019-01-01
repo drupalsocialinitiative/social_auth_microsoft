@@ -65,7 +65,7 @@ class MicrosoftAuthController extends OAuth2ControllerBase {
 
     // Checks if authentication failed.
     if ($this->request->getCurrentRequest()->query->has('error')) {
-      $this->messenger->addError('You could not be authenticated.');
+      $this->messenger->addError($this->t('You could not be authenticated.'));
 
       return $this->redirect('user.login');
     }
@@ -77,7 +77,7 @@ class MicrosoftAuthController extends OAuth2ControllerBase {
     if ($profile !== NULL) {
 
       // Gets (or not) extra initial data.
-      $data = $this->userAuthenticator->checkProviderIsAssociated($profile->getId()) ? FALSE : $this->providerManager->getExtraDetails();
+      $data = $this->userAuthenticator->checkProviderIsAssociated($profile->getId()) ? NULL : $this->providerManager->getExtraDetails();
 
       return $this->userAuthenticator->authenticateUser($profile->getName(), $profile->getEmail(), $profile->getId(), $this->providerManager->getAccessToken(), FALSE, $data);
     }

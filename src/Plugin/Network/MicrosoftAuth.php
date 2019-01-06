@@ -5,8 +5,7 @@ namespace Drupal\social_auth_microsoft\Plugin\Network;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
-use Drupal\Core\Routing\RequestContext;
-use Drupal\social_auth\SocialAuthDataHandler;
+use Drupal\Core\Url;
 use Drupal\social_api\Plugin\NetworkBase;
 use Drupal\social_api\SocialApiException;
 use Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings;
@@ -34,25 +33,11 @@ use Drupal\Core\Site\Settings;
 class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
 
   /**
-   * The Social Auth Data Handler.
-   *
-   * @var \Drupal\social_auth\SocialAuthDataHandler
-   */
-  protected $dataHandler;
-
-  /**
    * The logger factory.
    *
    * @var \Drupal\Core\Logger\LoggerChannelFactory
    */
   protected $loggerFactory;
-
-  /**
-   * The request context object.
-   *
-   * @var \Drupal\Core\Routing\RequestContext
-   */
-  protected $requestContext;
 
   /**
    * The site settings.
@@ -66,14 +51,12 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
    */
   public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
     return new static(
-      $container->get('social_auth.data_handler'),
       $configuration,
       $plugin_id,
       $plugin_definition,
       $container->get('entity_type.manager'),
       $container->get('config.factory'),
       $container->get('logger.factory'),
-      $container->get('router.request_context'),
       $container->get('settings')
     );
   }
@@ -81,8 +64,6 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
   /**
    * MicrosoftAuth constructor.
    *
-   * @param \Drupal\social_auth\SocialAuthDataHandler $data_handler
-   *   The data handler.
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.
    * @param string $plugin_id
@@ -95,34 +76,27 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
    *   The configuration factory object.
    * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger_factory
    *   The logger factory.
-   * @param \Drupal\Core\Routing\RequestContext $requestContext
-   *   The Request Context Object.
    * @param \Drupal\Core\Site\Settings $settings
-   *   The settings factory.
+   *   The site settings.
    */
-  public function __construct(SocialAuthDataHandler $data_handler,
-                              array $configuration,
+  public function __construct(array $configuration,
                               $plugin_id,
                               array $plugin_definition,
                               EntityTypeManagerInterface $entity_type_manager,
                               ConfigFactoryInterface $config_factory,
                               LoggerChannelFactoryInterface $logger_factory,
-                              RequestContext $requestContext,
-                              Settings $settings
-  ) {
+                              Settings $settings) {
 
     parent::__construct($configuration, $plugin_id, $plugin_definition, $entity_type_manager, $config_factory);
 
-    $this->dataHandler = $data_handler;
     $this->loggerFactory = $logger_factory;
-    $this->requestContext = $requestContext;
     $this->siteSettings = $settings;
   }
 
   /**
    * Sets the underlying SDK library.
    *
-   * @return \Stevenmaguire\OAuth2\Client\Provider\Microsoft
+   * @return \Stevenmaguire\OAuth2\Client\Provider\Microsoft|false
    *   The initialized 3rd party library instance.
    *
    * @throws SocialApiException
@@ -134,6 +108,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
     if (!class_exists($class_name)) {
       throw new SocialApiException(sprintf('The Microsoft Library for the league oAuth not found. Class: %s.', $class_name));
     }
+
     /* @var \Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings $settings */
     $settings = $this->settings;
 
@@ -142,7 +117,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
       $league_settings = [
         'clientId' => $settings->getAppId(),
         'clientSecret' => $settings->getAppSecret(),
-        'redirectUri' => $this->requestContext->getCompleteBaseUrl() . '/user/login/microsoft/callback',
+        'redirectUri' => Url::fromRoute('social_auth_microsoft.callback')->setAbsolute()->toString(),
       ];
 
       // Proxy configuration data for outward proxy.
@@ -153,6 +128,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
 
       return new Microsoft($league_settings);
     }
+
     return FALSE;
   }
 

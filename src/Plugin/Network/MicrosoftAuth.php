@@ -14,15 +14,15 @@ use Stevenmaguire\OAuth2\Client\Provider\Microsoft;
  * @package Drupal\simple_microsoft_connect\Plugin\Network
  *
  * @Network(
- *   id = "social_auth_microsoft",
- *   social_network = "Microsoft",
- *   type = "social_auth",
- *   handlers = {
- *     "settings": {
- *       "class": "\Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings",
- *       "config_id": "social_auth_microsoft.settings"
- *     }
+ *  id = "social_auth_microsoft",
+ *  social_network = "Microsoft",
+ *  type = "social_auth",
+ *  handlers = {
+ *   "settings": {
+ *    "class": "\Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings",
+ *    "config_id": "social_auth_microsoft.settings"
  *   }
+ *  }
  * )
  */
 class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
@@ -33,7 +33,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
    * @return \Stevenmaguire\OAuth2\Client\Provider\Microsoft|false
    *   The initialized 3rd party library instance.
    *
-   * @throws SocialApiException
+   * @throws \Drupal\social_api\SocialApiException
    *   If the SDK library does not exist.
    */
   protected function initSdk() {

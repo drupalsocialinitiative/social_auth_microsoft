@@ -43,7 +43,7 @@ class MicrosoftAuth extends NetworkBase implements MicrosoftAuthInterface {
       throw new SocialApiException(sprintf('The Microsoft library for PHP League OAuth2 not found. Class: %s.', $class_name));
     }
 
-    /* @var \Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings $settings */
+    /** @var \Drupal\social_auth_microsoft\Settings\MicrosoftAuthSettings $settings */
     $settings = $this->settings;
 
     if ($this->validateConfig($settings)) {

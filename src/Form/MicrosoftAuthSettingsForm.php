@@ -39,7 +39,7 @@ class MicrosoftAuthSettingsForm extends SocialAuthSettingsForm {
       '#title' => $this->t('Microsoft Client settings'),
       '#open' => TRUE,
       '#description' => $this->t('You need to first create a Microsoft App at <a href="@microsoft-dev">@microsoft-dev</a>',
-        ['@microsoft-dev' => 'https://apps.dev.microsoft.com/?mkt=en-us#/appList']),
+        ['@microsoft-dev' => 'https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade']),
     ];
 
     $form['microsoft_settings']['app_id'] = [

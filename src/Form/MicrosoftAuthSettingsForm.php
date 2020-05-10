@@ -73,31 +73,37 @@ class MicrosoftAuthSettingsForm extends SocialAuthSettingsForm {
 
     /*
     $form['microsoft_settings']['advanced'] = [
-      '#type' => 'details',
-      '#title' => $this->t('Advanced settings'),
-      '#open' => FALSE,
+    '#type' => 'details',
+    '#title' => $this->t('Advanced settings'),
+    '#open' => FALSE,
     ];
 
     $form['microsoft_settings']['advanced']['scopes'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('Scopes for API call'),
-      '#default_value' => $config->get('scopes'),
-      '#description' => $this->t('Define any additional scopes to be requested, separated by a comma (e.g.: Contacts.Read,Files.Read).<br>
-                                  The scopes \'wl.basic\', \'wl.signin\', and \'wl.emails\' are added by default and always requested.<br>
-                                  You can see the full list of valid fields and required scopes <a href="@fields">here</a>.', ['@fields' => 'https://developer.microsoft.com/en-us/graph/docs/concepts/overview']),
+    '#type' => 'textarea',
+    '#title' => $this->t('Scopes for API call'),
+    '#default_value' => $config->get('scopes'),
+    '#description' => $this->t('Define any additional scopes to be requested,
+    separated by a comma (e.g.: Contacts.Read,Files.Read).<br>
+    The scopes \'wl.basic\', \'wl.signin\', and \'wl.emails\' are added by
+    default and always requested.<br>
+    You can see the full list of valid fields and required scopes
+    <a href="@fields">here</a>.', ['@fields' =>
+    'https://developer.microsoft.com/en-us/graph/docs/concepts/overview']),
     ];
 
     $form['microsoft_settings']['advanced']['endpoints'] = [
-      '#type' => 'textarea',
-      '#title' => $this->t('API calls to be made to collect data'),
-      '#default_value' => $config->get('endpoints'),
-      '#description' => $this->t('Define the Endpoints to be requested when user authenticates with Facebook for the first time<br>
-                                  Enter each endpoint in different lines in the format <em>endpoint</em>|<em>name_of_endpoint</em>.<br>
-                                  <b>For instance:</b><br>
-                                  /v1.0/me/drives|drives'),
+    '#type' => 'textarea',
+    '#title' => $this->t('API calls to be made to collect data'),
+    '#default_value' => $config->get('endpoints'),
+    '#description' => $this->t('Define the Endpoints to be requested when user
+    authenticates with Microsoft for the first time<br>
+    Enter each endpoint in different lines in the format
+    <em>endpoint</em>|<em>name_of_endpoint</em>.<br>
+    <b>For instance:</b><br>
+    /v1.0/me/drives|drives'),
 
     ];
-    */
+     */
 
     return parent::buildForm($form, $form_state);
   }
